@@ -8,7 +8,7 @@ Vagrant VM for running MorphoSource. This is a modified version of the [samvera-
 
 ## Setup
 
-1. `git clone https://github.com/duke-libraries/morphosource-vagrant.git`
+1. `git clone https://github.com/MorphoSource/morphosource-vagrant`
 2. `cd morphosource-vagrant`
 3. `vagrant up`
 
