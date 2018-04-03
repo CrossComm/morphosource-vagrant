@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Contain Environment variables for installs
+#
+
+SHARED_DIR="/vagrant"
+
+DOWNLOAD_DIR="$SHARED_DIR/downloads"
+if [ ! -d $DOWNLOAD_DIR ]; then
+  mkdir $DOWNLOAD_DIR
+fi
+
+FITS_VERSION=1.0.5
