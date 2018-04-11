@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /home/ubuntu/.rvm/scripts/rvm
+source $HOME/.rvm/scripts/rvm
 
 #
 # check for ruby 2.4.2
