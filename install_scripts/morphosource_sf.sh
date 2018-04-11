@@ -21,6 +21,9 @@ rake db:migrate
 echo 'load default workflow...'
 rake hyrax:workflow:load
 
+echo '-------------'
 echo 'Setup completed.  To start the server:'
+echo 'vagrant ssh'
 echo 'cd /vagrant/MorphoSource_SF'
 echo 'bin/rails hydra:server'
+echo '-------------'
