@@ -9,6 +9,8 @@ sudo apt-get -y install $PACKAGES
 # ruby and the development libraries (so we can compile nokogiri, kgio, etc)
 sudo apt-get -y install ruby ruby-dev
 
+# Note: rails will be installed by the bundler later (see README of MorphoSource_SF)
+
 # gems
 # GEMS="bundler rails"
 # sudo gem install $GEMS --no-ri --no-rdoc
