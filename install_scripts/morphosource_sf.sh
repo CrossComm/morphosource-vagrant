@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # This script setups the MorphoSource_SF hyrax app
+source $HOME/.rvm/scripts/rvm
 
 echo
 echo 'Setting up MorphoSource_SF'
@@ -12,7 +13,7 @@ echo 'Copying the role map config file...'
 cp config/role_map.yml.sample config/role_map.yml
 
 echo 'Install bundler and run bundle install...'
-gem install bundler
+sudo gem install bundler
 bundle install --without production
 
 echo 'run database migrations...'
