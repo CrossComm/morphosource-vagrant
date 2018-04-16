@@ -45,6 +45,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "./install_scripts/ruby.sh", args: shared_dir
   config.vm.provision "shell", path: "./install_scripts/rvm.sh", args: "stable", privileged: false
   config.vm.provision "shell", path: "./install_scripts/rvm-ruby.sh", args: shared_dir, privileged: false
-  config.vm.provision "shell", path: "./install_scripts/postgres.sh", args: shared_dir
+  #config.vm.provision "shell", path: "./install_scripts/postgres.sh", args: shared_dir
   config.vm.provision "shell", path: "./install_scripts/fits.sh", args: shared_dir, privileged: false
 end

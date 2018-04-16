@@ -6,10 +6,10 @@ Vagrant VM for running MorphoSource. This is a modified version of the [samvera-
 * [Vagrant](https://www.vagrantup.com/) version 1.8.5+
 * [VirtualBox](https://www.virtualbox.org/)
 
+## Submodule
+
+* [MorphoSource_SF](https://github.com/MorphoSource/MorphoSource_SF)
+
 ## Setup
 
-1. `git clone https://github.com/MorphoSource/morphosource-vagrant`
-2. `cd morphosource-vagrant`
-3. `vagrant up`
-
-You can shell into the machine with `vagrant ssh` or `ssh -p 2222 vagrant@localhost`
+See the Setup the Environment steps in the [MorphoSource_SF](https://github.com/MorphoSource/MorphoSource_SF) submodule
