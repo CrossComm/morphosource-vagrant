@@ -22,6 +22,12 @@ bundle install --without production
 echo 'Copying the role map config file...'
 cp config/role_map.yml.sample config/role_map.yml
 
+echo 'creating Postgres db and user for Hydra...'
+psql -c "CREATE USER hydra WITH PASSWORD 'hydra' CREATEDB;" postgres
+psql -c "CREATE DATABASE development WITH OWNER hydra;" postgres
+psql -c "CREATE DATABASE test WITH OWNER hydra;" postgres
+rake db:schema:load
+
 echo 'run database migrations...'
 rake db:migrate
 
