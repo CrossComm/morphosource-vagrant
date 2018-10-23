@@ -18,6 +18,16 @@ if [ ! -d fits-$FITS_VERSION ]; then
   unzip fits.zip -d fits-$FITS_VERSION
   chmod a+x fits-$FITS_VERSION/*.sh
   FITS_PATH="${DOWNLOAD_DIR}/fits-${FITS_VERSION}"
+  # The following steps will copy changes for supporting Dicom file type
+  # note that a future update of FITS might create a conflict on exiftool_xslt_map.xml
+  # in that case, compare the new version of exiftool_xslt_map.xml with the old one, 
+  # and manually add the DICOM xslt mapping, e.g. : 
+  #
+  # 	<map format="DICOM" transform="exiftool_dicom_to_fits.xslt"/>
+  #
+  cp $SHARED_DIR/install_scripts/fits_config/exiftool_xslt_map.xml $FITS_PATH/xml/exiftool/.
+  cp $SHARED_DIR/install_scripts/fits_config/exiftool_dicom_to_fits.xslt $FITS_PATH/xml/exiftool/.
+  #
   cd
   echo "PATH=\${PATH}:$FITS_PATH" >> .bashrc
 fi
