@@ -25,8 +25,9 @@ if [ ! -d fits-$FITS_VERSION ]; then
   #
   # 	<map format="DICOM" transform="exiftool_dicom_to_fits.xslt"/>
   #
-  cp $SHARED_DIR/install_scripts/fits_config/exiftool_xslt_map.xml $FITS_PATH/xml/exiftool/.
-  cp $SHARED_DIR/install_scripts/fits_config/exiftool_dicom_to_fits.xslt $FITS_PATH/xml/exiftool/.
+  cp -f $SHARED_DIR/install_scripts/fits_config/fits.xml $FITS_PATH/xml/.
+  cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_xslt_map.xml $FITS_PATH/xml/exiftool/.
+  cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_dicom_to_fits.xslt $FITS_PATH/xml/exiftool/.
   #
   cd
   echo "PATH=\${PATH}:$FITS_PATH" >> .bashrc
