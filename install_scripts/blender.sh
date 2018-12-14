@@ -22,3 +22,7 @@ if [ ! -d blender ]; then
   cd
   echo "export BLENDER_PATH=$BLENDER_PATH" >> .bashrc
 fi
+
+# shared library needed
+# from https://blender.stackexchange.com/questions/96020/libglu-so-1-error-loading-shared-library/102122
+sudo apt-get install libglu1
