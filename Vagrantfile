@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 8888, host: 8888 # Jasmine Tests
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4096
+    v.memory = 8192
   end
 
   # Check our system locale -- make sure it is set to UTF-8
