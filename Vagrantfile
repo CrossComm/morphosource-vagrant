@@ -48,4 +48,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "./install_scripts/postgres.sh", args: shared_dir
   config.vm.provision "shell", path: "./install_scripts/fits.sh", args: shared_dir, privileged: false
   config.vm.provision "shell", path: "./install_scripts/firefox.sh", args: shared_dir, privileged: false
+  config.vm.provision "shell", path: "./install_scripts/blender.sh", args: shared_dir, privileged: false
 end
