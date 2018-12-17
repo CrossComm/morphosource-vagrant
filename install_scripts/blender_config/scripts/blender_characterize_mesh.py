@@ -1,5 +1,6 @@
 import bpy
 import json
+import re
 import xml.etree.ElementTree as ET
 
 from os import path
@@ -62,142 +63,153 @@ metadata = {
 }
 
 mime_type = {
-	'.gltf': 'model/gltf+json',
-	'.obj': 'text/prs.wavefront-obj',
-	'.ply': 'application/ply',
-	'.stl': 'application/stl',
-	'.wrl': 'model/vrml',
-	'.x3d': 'model/x3d+xml'
+  '.gltf': 'model/gltf+json',
+  '.obj': 'text/prs.wavefront-obj',
+  '.ply': 'application/ply',
+  '.stl': 'application/stl',
+  '.wrl': 'model/vrml',
+  '.x3d': 'model/x3d+xml'
 }
 
 filepath = argv[-1]
 filename = path.split(filepath)[1]
-mimetype = mime_type[file_suffix(filepath)]
 
-metadata['filename'] = path.split(filepath)[1]
-metadata['filepath'] = filepath
-metadata['mimetype'] = mime_type[file_suffix(filepath)]
- 
-try:
-	bpy.ops.object.select_all(action='SELECT')
-	bpy.ops.object.delete()
-	output = mesh_import(filepath)
-	if len(bpy.data.objects) == 1:
-		metadata['load_successful'] = True
-	else:
-		metadata['load_successful'] = False # likely invalid file error, not an easy way to capture this from Blender
-		metadata['load_error_message'] = output.replace("\n", "; ")
-except Exception as e:
-	metadata['load_successful'] = False # likely file not found error
-	metadata['load_error_message'] = str(e).replace("\n", "; ")
+isMesh = re.match('^\.(gltf|obj|ply|stl|wrl|x3d)$', file_suffix(filepath))
+if isMesh:
+  mimetype = mime_type[file_suffix(filepath)]
+else:
+  mimetype = ''
+  
+if mimetype == '':
+  # for non mesh files, just return an empty xml
+  print('<?xml version="1.0" encoding="UTF-8"?><blender></blender>')
+else:
 
-if metadata['load_successful'] == True:
-  mesh_object = bpy.data.objects[0]
-  mesh = mesh_object.data
+  metadata['filename'] = path.split(filepath)[1]
+  metadata['filepath'] = filepath
+  metadata['mimetype'] = mime_type[file_suffix(filepath)]
 
-  metadata['point_count'] = len(mesh.vertices)
-  metadata['face_count'] = len(mesh.polygons)
-  point_count = len(mesh.vertices)
-  face_count = len(mesh.polygons)
+  try:
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete()
+    output = mesh_import(filepath)
+    if len(bpy.data.objects) == 1:
+      metadata['load_successful'] = True
+    else:
+      metadata['load_successful'] = False # likely invalid file error, not an easy way to capture this from Blender
+      metadata['load_error_message'] = output.replace("\n", "; ")
+  except Exception as e:
+    metadata['load_successful'] = False # likely file not found error
+    metadata['load_error_message'] = str(e).replace("\n", "; ")
 
-  # derive edges per face
-  edges_list = [len(p.vertices) for p in mesh.polygons]
-  edge_num_set = set(edges_list)
-  if len(edge_num_set) != 1:
-    metadata['load_successful'] = False
-  else:
-    metadata['edges_per_face'] = next(iter(edge_num_set))
-    edges_per_face = next(iter(edge_num_set))
+  if metadata['load_successful'] == True:
+    mesh_object = bpy.data.objects[0]
+    mesh = mesh_object.data
 
-  x_points = []
-  y_points = []
-  z_points = []
+    metadata['point_count'] = len(mesh.vertices)
+    metadata['face_count'] = len(mesh.polygons)
+    point_count = len(mesh.vertices)
+    face_count = len(mesh.polygons)
 
-  for v in mesh.vertices:
-      co = v.co
-      x_points.append(co[0])
-      y_points.append(co[1])
-      z_points.append(co[2])
+    # derive edges per face
+    edges_list = [len(p.vertices) for p in mesh.polygons]
+    edge_num_set = set(edges_list)
+    if len(edge_num_set) != 1:
+      metadata['load_successful'] = False
+    else:
+      metadata['edges_per_face'] = next(iter(edge_num_set))
+      edges_per_face = next(iter(edge_num_set))
 
-  # derive bounding box dimensions
-  metadata['bounding_box_dimensions']['bounding_box_x'] = max(x_points) - min(x_points)
-  metadata['bounding_box_dimensions']['bounding_box_y'] = max(y_points) - min(y_points)
-  metadata['bounding_box_dimensions']['bounding_box_z'] = max(z_points) - min(z_points)
-  bounding_box_x = str(max(x_points) - min(x_points))
-  bounding_box_y = str(max(y_points) - min(y_points))
-  bounding_box_z = str(max(z_points) - min(z_points))
+    x_points = []
+    y_points = []
+    z_points = []
 
-  # derive centroid info
-  metadata['centroid']['centroid_x'] = mean(x_points)
-  metadata['centroid']['centroid_y'] = mean(y_points)
-  metadata['centroid']['centroid_z'] = mean(z_points)
-  centroid_x = str(mean(x_points))
-  centroid_y = str(mean(y_points))
-  centroid_z = str(mean(z_points))
+    for v in mesh.vertices:
+        co = v.co
+        x_points.append(co[0])
+        y_points.append(co[1])
+        z_points.append(co[2])
 
-  # UV
-  if len(mesh.uv_textures) > 0:
-      metadata['has_uv_space'] = True
-      has_uv_space = True
-  else:
-      metadata['has_uv_space'] = False
-      has_uv_space = False
+    # derive bounding box dimensions
+    metadata['bounding_box_dimensions']['bounding_box_x'] = max(x_points) - min(x_points)
+    metadata['bounding_box_dimensions']['bounding_box_y'] = max(y_points) - min(y_points)
+    metadata['bounding_box_dimensions']['bounding_box_z'] = max(z_points) - min(z_points)
+    bounding_box_x = str(max(x_points) - min(x_points))
+    bounding_box_y = str(max(y_points) - min(y_points))
+    bounding_box_z = str(max(z_points) - min(z_points))
 
-  # Color
-  if len(mesh.vertex_colors) > 0:
-      metadata['vertex_color'] = True
-      vertex_color = True
-  else:
-      metadata['vertex_color'] = False
-      vertex_color = False
+    # derive centroid info
+    metadata['centroid']['centroid_x'] = mean(x_points)
+    metadata['centroid']['centroid_y'] = mean(y_points)
+    metadata['centroid']['centroid_z'] = mean(z_points)
+    centroid_x = str(mean(x_points))
+    centroid_y = str(mean(y_points))
+    centroid_z = str(mean(z_points))
 
-#export_json(metadata)
+    # UV
+    if len(mesh.uv_textures) > 0:
+        metadata['has_uv_space'] = True
+        has_uv_space = True
+    else:
+        metadata['has_uv_space'] = False
+        has_uv_space = False
 
-blender = ET.Element('blender', attrib={})
-identification = ET.SubElement(blender, 'identification')
-identity = ET.SubElement(identification, 'identity', attrib={"format":file_suffix(filepath)[1:], "mimetype":mimetype})
-fileinfo = ET.SubElement(blender, 'fileinfo')
-e = ET.SubElement(fileinfo, 'filepath')
-e.text = str(filepath)
-e = ET.SubElement(fileinfo, 'filename')
-e.text = str(filename)
-e = ET.SubElement(fileinfo, 'mimetype')
-e.text = str(mimetype)
-md5checksum = ''
-e = ET.SubElement(fileinfo, 'md5checksum')
-e.text = str(md5checksum)
+    # Color
+    if len(mesh.vertex_colors) > 0:
+        metadata['vertex_color'] = True
+        vertex_color = True
+    else:
+        metadata['vertex_color'] = False
+        vertex_color = False
 
-meta = ET.SubElement(blender, 'metadata')
-mesh = ET.SubElement(meta, 'mesh')
-e = ET.SubElement(mesh, 'pointCount')
-e.text = str(point_count)
-e = ET.SubElement(mesh, 'faceCount')
-e.text = str(face_count)  
-e = ET.SubElement(mesh, 'edgesPerFace')
-e.text = str(edges_per_face)  
-bbd = ET.SubElement(mesh, 'boundingboxdimensions')
-e = ET.SubElement(bbd, 'boundingBoxX')
-e.text = str(bounding_box_x)  
-e = ET.SubElement(bbd, 'boundingBoxY')
-e.text = str(bounding_box_y)
-e = ET.SubElement(bbd, 'boundingBoxZ')
-e.text = str(bounding_box_z)  
-cen = ET.SubElement(mesh, 'centroid')
-e = ET.SubElement(cen, 'centroidX')
-e.text = str(centroid_x)  
-e = ET.SubElement(cen, 'centroidY')
-e.text = str(centroid_y)
-e = ET.SubElement(cen, 'centroidZ')
-e.text = str(centroid_z)  
-e = ET.SubElement(mesh, 'hasUvSpace')
-e.text = str(has_uv_space)
-e = ET.SubElement(mesh, 'vertexColor')
-e.text = str(vertex_color)
-e = ET.SubElement(mesh, 'colorFormat')
-e.text = str('')
-e = ET.SubElement(mesh, 'normalsFormat')
-e.text = str('')
+  #export_json(metadata)
 
-print('<?xml version="1.0" encoding="UTF-8"?>')
-ET.dump(blender) 
+  blender = ET.Element('blender', attrib={})
+  identification = ET.SubElement(blender, 'identification')
+  identity = ET.SubElement(identification, 'identity', attrib={"format":file_suffix(filepath)[1:], "mimetype":mimetype})
+  fileinfo = ET.SubElement(blender, 'fileinfo')
+  e = ET.SubElement(fileinfo, 'filepath')
+  e.text = str(filepath)
+  e = ET.SubElement(fileinfo, 'filename')
+  e.text = str(filename)
+  e = ET.SubElement(fileinfo, 'mimetype')
+  e.text = str(mimetype)
+  md5checksum = ''
+  e = ET.SubElement(fileinfo, 'md5checksum')
+  e.text = str(md5checksum)
 
+  meta = ET.SubElement(blender, 'metadata')
+  mesh = ET.SubElement(meta, 'mesh')
+  e = ET.SubElement(mesh, 'pointCount')
+  e.text = str(point_count)
+  e = ET.SubElement(mesh, 'faceCount')
+  e.text = str(face_count)  
+  e = ET.SubElement(mesh, 'edgesPerFace')
+  e.text = str(edges_per_face)  
+  bbd = ET.SubElement(mesh, 'boundingboxdimensions')
+  e = ET.SubElement(bbd, 'boundingBoxX')
+  e.text = str(bounding_box_x)  
+  e = ET.SubElement(bbd, 'boundingBoxY')
+  e.text = str(bounding_box_y)
+  e = ET.SubElement(bbd, 'boundingBoxZ')
+  e.text = str(bounding_box_z)  
+  cen = ET.SubElement(mesh, 'centroid')
+  e = ET.SubElement(cen, 'centroidX')
+  e.text = str(centroid_x)  
+  e = ET.SubElement(cen, 'centroidY')
+  e.text = str(centroid_y)
+  e = ET.SubElement(cen, 'centroidZ')
+  e.text = str(centroid_z)  
+  e = ET.SubElement(mesh, 'hasUvSpace')
+  e.text = str(has_uv_space)
+  e = ET.SubElement(mesh, 'vertexColor')
+  e.text = str(vertex_color)
+  e = ET.SubElement(mesh, 'colorFormat')
+  e.text = str('')
+  e = ET.SubElement(mesh, 'normalsFormat')
+  e.text = str('')
+
+  print('<?xml version="1.0" encoding="UTF-8"?>')
+  ET.dump(blender) 
+
+# end else (mimetype is not empty)
