@@ -31,7 +31,8 @@ def mesh_import(filepath):
     '.wrl': bpy.ops.import_scene.x3d,
     '.x3d': bpy.ops.import_scene.x3d,
     '.gltf': bpy.ops.import_scene.gltf
-    # todo: x3d and gltf are not working yet.  will try again when blender 2.8 stable release is ready
+    # todo: gltf is not working yet.  It works for Blender 2.8 beta, but x3d imports failed using 2.8 beta.
+    # will try again when blender 2.8 stable release is ready
   }
 
   stdout = io.StringIO()
@@ -72,21 +73,17 @@ else:
     bpy.ops.object.delete()
     output = mesh_import(filepath)
     #print('len(bpy.data.objects)='+str(len(bpy.data.objects)))
-    if len(bpy.data.objects) == 1:
+    if len(bpy.data.objects) > 0: # x3d returns 2 objects, others return 1
       loadSuccess = True
     else:
       loadSuccess = False
       # likely invalid file error, not an easy way to capture this from Blender
-      errorMessage = output.replace("\n", "; ")
+      errorMessage = "Import failed, object count is 0, message: " + output.replace("\n", "; ")
       errmsg.text = str(errorMessage)
-      print('IMPORT FAIL, message:')
-      print(errorMessage)
   except Exception as e:
     loadSuccess = False # likely file not found error
-    errorMessage = str(e).replace("\n", "; ")
+    errorMessage = "Imported failed, exception: " + str(e).replace("\n", "; ")
     errmsg.text = str(errorMessage)
-    print('EXCEPTION, message:')
-    print(errorMessage)
 
   if loadSuccess == True:
     mesh_object = bpy.data.objects[0]
