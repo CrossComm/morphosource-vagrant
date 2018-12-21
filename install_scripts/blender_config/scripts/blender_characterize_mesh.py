@@ -131,9 +131,11 @@ else:
 
     # Color
     vertex_color = False
+    color_format = ""
     if hasattr(mesh, 'vertex_colors'):
       if len(mesh.vertex_colors) > 0:
         vertex_color = True
+        color_format = "vertex color"
 
     identification = ET.SubElement(blender, 'identification')
     identity = ET.SubElement(identification, 'identity', attrib={"format":file_suffix(filepath)[1:], "mimetype":mimetype})
@@ -170,9 +172,9 @@ else:
     e.text = str(has_uv_space)
     e = ET.SubElement(mesh, 'vertexColor')
     e.text = str(vertex_color)
-    # todo: need to set the following two attributes, or remove them if not needed 
     e = ET.SubElement(mesh, 'colorFormat')
-    e.text = str('')
+    e.text = str(color_format)
+    # todo: Not sure what to do with normals format yet.  Remove later if not needed 
     e = ET.SubElement(mesh, 'normalsFormat')
     e.text = str('')
 
