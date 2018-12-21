@@ -61,13 +61,14 @@ else:
 
 print('<?xml version="1.0" encoding="UTF-8"?>')
 blender = ET.Element('blender', attrib={})
-errmsg = ET.SubElement(blender, 'errorMessage')
+status = ET.SubElement(blender, 'status') # status can be displayed on UI
+error = ET.SubElement(blender, 'error') # error should be shown internally only
+statusMessage = errorMessage = ""
 
 if mimetype == '':
   # for non mesh files, just return an empty xml with error message
-  errmsg.text = str('Mime type is not a mesh')
+  statusMessage = errorMessage = "There was a problem characterizing the file.  The file was not found or not a mesh."
 else:
-  errmsg.text = str('')
   try:
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete()
@@ -77,13 +78,12 @@ else:
       loadSuccess = True
     else:
       loadSuccess = False
-      # likely invalid file error, not an easy way to capture this from Blender
-      errorMessage = "Import failed, object count is 0, message: " + output.replace("\n", "; ")
-      errmsg.text = str(errorMessage)
+      statusMessage = "There was a problem characterizing the file (Data object empty)."
+      errorMessage = "Data.objects count is 0. " + output.replace("\n", "; ")
   except Exception as e:
     loadSuccess = False # likely file not found error
-    errorMessage = "Imported failed, exception: " + str(e).replace("\n", "; ")
-    errmsg.text = str(errorMessage)
+    statusMessage = "There was a problem characterizing the file (Exception)."
+    errorMessage = "Exception: " + str(e).replace("\n", "; ")
 
   if loadSuccess == True:
     mesh_object = bpy.data.objects[0]
@@ -134,7 +134,7 @@ else:
     if hasattr(mesh, 'vertex_colors'):
       if len(mesh.vertex_colors) > 0:
         vertex_color = True
-  
+
     identification = ET.SubElement(blender, 'identification')
     identity = ET.SubElement(identification, 'identity', attrib={"format":file_suffix(filepath)[1:], "mimetype":mimetype})
     fileinfo = ET.SubElement(blender, 'fileinfo')
@@ -170,6 +170,7 @@ else:
     e.text = str(has_uv_space)
     e = ET.SubElement(mesh, 'vertexColor')
     e.text = str(vertex_color)
+    # todo: need to set the following two attributes, or remove them if not needed 
     e = ET.SubElement(mesh, 'colorFormat')
     e.text = str('')
     e = ET.SubElement(mesh, 'normalsFormat')
@@ -178,4 +179,6 @@ else:
   # end if loadSuccess == True
 
 # end else (mimetype is not empty)
+status.text = statusMessage
+error.text = errorMessage
 ET.dump(blender) 
