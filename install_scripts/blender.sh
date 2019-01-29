@@ -10,7 +10,8 @@ if [ ! -d blender ]; then
   DOWNLOAD_URL="https://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2"
   cd $DOWNLOAD_DIR
   if [ ! -f "blender.tar.bz2" ]; then
-    curl $DOWNLOAD_URL -o blender.tar.bz2
+    echo "Downloading $DOWNLOAD_URL"
+    curl -sS $DOWNLOAD_URL -o blender.tar.bz2
   fi
   tar xjf blender.tar.bz2
   mv blender-2.79b-linux-glibc219-x86_64 blender
