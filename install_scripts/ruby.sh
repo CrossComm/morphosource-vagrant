@@ -3,7 +3,7 @@
 echo "Setting up ruby environment"
 
 # pre-requisites
-PACKAGES="imagemagick libreadline-dev libyaml-dev libsqlite3-dev nodejs zlib1g-dev libsqlite3-dev redis-server libreoffice ffmpeg libav-tools"
+PACKAGES="imagemagick libreadline-dev libyaml-dev libsqlite3-dev nodejs zlib1g-dev libsqlite3-dev redis-server libreoffice ffmpeg libav-tools libcurl4-openssl-dev"
 sudo apt-get -y install $PACKAGES
 
 # ruby and the development libraries (so we can compile nokogiri, kgio, etc)
