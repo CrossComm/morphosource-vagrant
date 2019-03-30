@@ -21,6 +21,12 @@ if [ ! -d blender ]; then
   chmod a+x $BLENDER_PATH/scripts/*
   cp -r $SHARED_DIR/install_scripts/blender_config/addons/io_scene_gltf2 $BLENDER_PATH/2.79/scripts/addons/
 
+  # Install GLTF Add-ons
+  echo "Downloading GLTF Blender Addon"
+  git clone https://github.com/KhronosGroup/glTF-Blender-IO.git
+  cp -r $DOWNLOAD_DIR/glTF-Blender-IO/addons/io_scene_gltf2 $BLENDER_PATH/2.79/scripts/addons/io_scene_gltf2
+  rm -rf $DOWNLOAD_DIR/glTF-Blender-IO
+
   cd
   echo "export BLENDER_PATH=$BLENDER_PATH" >> .bashrc
 fi
