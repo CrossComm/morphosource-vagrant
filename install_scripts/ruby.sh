@@ -16,5 +16,7 @@ sudo apt-get -y install ruby ruby-dev
 # sudo gem install $GEMS --no-ri --no-rdoc
 
 # For testing, we need phantomjs. Install it via NPM/Node
-sudo apt-get -y install npm nodejs-legacy
-sudo npm install -g phantomjs-prebuilt
+# Some extra effort to get NVM/NPM running
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+npm install -g phantomjs-prebuilt
