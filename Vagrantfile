@@ -51,4 +51,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell", path: "./install_scripts/firefox.sh", args: shared_dir, privileged: false
   config.vm.provision "shell", path: "./install_scripts/blender.sh", args: shared_dir, privileged: false
   config.vm.provision "shell", path: "./install_scripts/gltf-pipeline.sh", args: shared_dir, privileged: false
+  config.vm.provision "shell", path: "./install_scripts/fiji.sh", args: shared_dir, privileged: false
+  config.vm.provision "shell", path: "./install_scripts/dcmtk.sh", args: shared_dir
 end

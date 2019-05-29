@@ -73,11 +73,19 @@ if (args.input and args.output and args.unit and
             stdout = import_mesh(ifile)
             if len(bpy.data.objects) != 0:
                 for obj in bpy.data.objects:
-                    if type(obj.data) == bpy_types.Mesh and unit != 'm':
+                    if type(obj.data) == bpy_types.Mesh:
+                        # Apply material (only works in Blender 2.8)
+                        # if not obj.data.materials:
+                        #     mat = bpy.data.materials.new(name="Material")
+                        #     mat.use_nodes = True
+                        #     obj.data.materials.append(mat)
+
                         # Rescale mesh coordinates
-                        sf = get_scale_factor(unit)
-                        for v in obj.data.vertices:
-                            v.co = v.co * sf
+                        if unit != 'm':
+                            sf = get_scale_factor(unit)
+                            for v in obj.data.vertices:
+                                v.co = v.co * sf
+                bpy.ops.object.origin_set()
                 bpy.ops.export_scene.gltf(filepath=ofile)
             else:
                 # likely invalid file error, not an easy way to capture this from Blender
