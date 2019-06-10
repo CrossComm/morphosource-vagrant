@@ -47,6 +47,11 @@ def get_scale_factor(unit):
     }
     return factors[unit]
 
+def clean_decimate_modifiers(obj):
+    for m in obj.modifiers:
+        if(m.type=="DECIMATE"):
+            obj.modifiers.remove(modifier=m)
+
 if "--" not in argv:
     argv = [] # as if no args are passed
 else:
@@ -57,6 +62,8 @@ parser.add_argument('-o', '--output', help='output GLB file')
 parser.add_argument('-u', '--unit', 
     help='Unit of input mesh file, one of mm, cm, m, km, in, ft, or mi')
 args = parser.parse_args(argv)
+
+target_faces = 100000
 
 if (args.input and args.output and args.unit and 
     args.unit in ['mm','cm','m', 'km', 'in', 'ft', 'mi']):
@@ -80,11 +87,23 @@ if (args.input and args.output and args.unit and
                         #     mat.use_nodes = True
                         #     obj.data.materials.append(mat)
 
+                        # Decimate mesh
+                        if len(obj.data.polygons) > target_faces:
+                            clean_decimate_modifiers(obj)
+                            modifier = obj.modifiers.new('DecimateMod','DECIMATE')
+                            modifier.ratio = target_faces/len(obj.data.polygons)
+                            modifier.use_collapse_triangulate=True
+
+                bpy.ops.object.convert(target='MESH')
+
+                for obj in bpy.data.objects:
+                    if type(obj.data) == bpy_types.Mesh:
                         # Rescale mesh coordinates
                         if unit != 'm':
                             sf = get_scale_factor(unit)
                             for v in obj.data.vertices:
                                 v.co = v.co * sf
+               
                 bpy.ops.object.origin_set()
                 bpy.ops.export_scene.gltf(filepath=ofile)
             else:
