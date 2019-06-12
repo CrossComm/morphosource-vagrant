@@ -87,6 +87,8 @@ if (args.input and args.output and args.unit and
                         #     mat.use_nodes = True
                         #     obj.data.materials.append(mat)
 
+                        bpy.context.scene.objects.active = obj
+
                         # Decimate mesh
                         if len(obj.data.polygons) > target_faces:
                             clean_decimate_modifiers(obj)
