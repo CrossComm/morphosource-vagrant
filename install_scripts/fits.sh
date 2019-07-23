@@ -26,9 +26,15 @@ if [ ! -d fits-$FITS_VERSION ]; then
   #
   # 	<map format="DICOM" transform="exiftool_dicom_to_fits.xslt"/>
   #
-  cp -f $SHARED_DIR/install_scripts/fits_config/fits.xml $FITS_PATH/xml/.
-  cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_xslt_map.xml $FITS_PATH/xml/exiftool/.
-  cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_dicom_to_fits.xslt $FITS_PATH/xml/exiftool/.
+  #cp -f $SHARED_DIR/install_scripts/fits_config/fits.xml $FITS_PATH/xml/.
+  #cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_xslt_map.xml $FITS_PATH/xml/exiftool/.
+  #cp $SHARED_DIR/install_scripts/fits_config/exiftool/exiftool_dicom_to_fits.xslt $FITS_PATH/xml/exiftool/.
+
+  curl -o fits.xml https://raw.githubusercontent.com/MorphoSource/MorphoSource_SF/dev/vendor/fits_config/fits.xml
+  cp -f fits.xml $FITS_PATH/xml/.
+  curl -o $FITS_PATH/xml/exiftool/exiftool_xslt_map.xml https://raw.githubusercontent.com/MorphoSource/MorphoSource_SF/dev/vendor/fits_config/exiftool/exiftool_xslt_map.xml
+  curl -o $FITS_PATH/xml/exiftool/exiftool_dicom_to_fits.xslt https://raw.githubusercontent.com/MorphoSource/MorphoSource_SF/dev/vendor/fits_config/exiftool/exiftool_dicom_to_fits.xslt
+
   #
   cd
   echo "PATH=\${PATH}:$FITS_PATH" >> .bashrc

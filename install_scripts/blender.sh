@@ -17,12 +17,14 @@ if [ ! -d blender ]; then
   mv blender-2.79b-linux-glibc219-x86_64 blender
 
   BLENDER_PATH="${DOWNLOAD_DIR}/blender"
-  cp -r $SHARED_DIR/install_scripts/blender_config/scripts $BLENDER_PATH/.
-  chmod a+x $BLENDER_PATH/scripts/*
+
+  #cp -r $SHARED_DIR/install_scripts/blender_config/scripts $BLENDER_PATH/.
+  #chmod a+x $BLENDER_PATH/scripts/*
   cp -r $SHARED_DIR/install_scripts/blender_config/addons/io_scene_gltf2 $BLENDER_PATH/2.79/scripts/addons/
 
   cd
   echo "export BLENDER_PATH=$BLENDER_PATH" >> .bashrc
+  echo "PATH=\${PATH}:$BLENDER_PATH" >> .bashrc
 fi
 
 # shared library needed
