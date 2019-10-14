@@ -3,15 +3,7 @@
 echo "Installing necessary Python modules for MorphoSourceSF"
 
 cd
-echo "Alias test"
-echo "$(cat .bashrc | grep 'python')"
-
-if echo "$(cat .bashrc | grep 'python')"; then
-  echo "Skip python alias"
-else
-  echo "Creating alias python3 to python"
-  echo "alias python=python3" >> .bashrc
-fi
+echo "alias python=python3" >> .bashrc
 
 sudo python3 -m pip install numpy
 echo "Check numpy Installation"
