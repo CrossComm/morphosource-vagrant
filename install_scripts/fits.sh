@@ -8,7 +8,8 @@ if [ -f "$SHARED_DIR/install_scripts/config" ]; then
 fi
 
 if [ ! -d fits-$FITS_VERSION ]; then
-  DOWNLOAD_URL="http://projects.iq.harvard.edu/files/fits/files/fits-${FITS_VERSION}.zip"
+  #DOWNLOAD_URL="http://projects.iq.harvard.edu/files/fits/files/fits-${FITS_VERSION}.zip"
+  DOWNLOAD_URL="https://github.com/harvard-lts/fits/releases/download/${FITS_VERSION}/fits-${FITS_VERSION}.zip"
   cd $DOWNLOAD_DIR
   if [ ! -f "fits.zip" ]; then
     echo "Downlading $DOWNLOAD_URL"
