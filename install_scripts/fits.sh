@@ -13,7 +13,9 @@ if [ ! -d fits-$FITS_VERSION ]; then
   cd $DOWNLOAD_DIR
   if [ ! -f "fits.zip" ]; then
     echo "Downlading $DOWNLOAD_URL"
-    curl -sS $DOWNLOAD_URL -o fits.zip
+    #curl -sS $DOWNLOAD_URL -o fits.zip
+    wget $DOWNLOAD_URL
+    mv fits-${FITS_VERSION}.zip fits.zip
   fi
   # latest fits zip does not include a fits directory, we need to create one
   mkdir fits-$FITS_VERSION
