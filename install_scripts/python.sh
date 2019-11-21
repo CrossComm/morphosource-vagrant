@@ -1,5 +1,7 @@
 #!/bin/sh
 
+sudo apt-get -y install python3-pip
+
 echo "Installing necessary Python modules for MorphoSourceSF"
 
 sudo python3 -m pip install numpy
