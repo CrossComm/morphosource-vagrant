@@ -12,8 +12,10 @@ cd /vagrant/MorphoSource_SF
 echo 'Install bundler and run bundle install...'
 
 #read -p "Press enter to continue "
-gem install bundler
+gem install bundler -v 2.0.2
 which bundle
+
+read -p " Press enter to continue "
 
 #read -p "Press enter to continue "
 bundle install --without production
