@@ -8,7 +8,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.hostname = "samvera"
 
-  config.vm.box = "ubuntu/xenial64"
+  config.vm.box = "hashicorp/bionic64"
 
   config.vm.network :forwarded_port, guest: 3000, host: 3000 # Rails
   config.vm.network :forwarded_port, guest: 5432, host: 5432 # PostgreSQL

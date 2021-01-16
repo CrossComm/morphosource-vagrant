@@ -11,6 +11,7 @@ fi
 cd
 
 # Update
+export DEBIAN_FRONTEND=noninteractive
 apt-get -y update && apt-get -y upgrade
 
 # SSH
@@ -24,6 +25,7 @@ apt-get -y install git vim
 
 # Wget, curl and unzip
 apt-get -y install wget curl unzip
+apt-get -y install libcurl4-openssl-dev
 
 # Disable daily apt unattended updates.
 echo 'APT::Periodic::Enable "0";' >> /etc/apt/apt.conf.d/10periodic
